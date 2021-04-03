@@ -56,19 +56,19 @@ bool is_final_state(State &s) {
     return false;
 }
 
-City buscador_ciudad(string nombreC){
+City* buscador_ciudad(string nombreC){
     for (int i = 0; i < (int)ciudades.size(); i++){
         if(ciudades[i].ciudad.compare(nombreC) == 0){
-            return ciudades[i];
+            return &ciudades[i];
         }
     }
-    return City();
+    return NULL;
 }
 
 // Funcion validada
 State transition(State &s, Action &a) {
     State new_state = s;
-    City c = buscador_ciudad(a.nombre_ciudad);
+    City c = *buscador_ciudad(a.nombre_ciudad);
     
     new_state.ciudadActual = c ;
     new_state.ciudadesRecorridas.push_back(c);
@@ -328,7 +328,7 @@ int main () {
     cout << "distancia: " << endl;
     cout << final_state.distanciaRecorrida<< endl;
     cout << "Resultado final: " << endl;
-    cout << final_state.ciudadActual.ciudad<< endl;
+    //cout << final_state.ciudadActual.ciudad<< endl;
 
     for (City c : final_state.ciudadesRecorridas) {
         cout << c.ciudad << endl;
