@@ -30,10 +30,11 @@ public:
     int distancia;
 };
 
+enum cities{Arad, Zerind, Oradea, Sibiu, Fagaras, Neamt, Lasi, Vaslui, Eforie, Hirsova, Urziceni, Bucharest, Giurgiu, Timisoara, Lugoj, Mehadia, Dobreta, Craiova, Pitesti, Rimnicu};
+
 //VARIABLES GLOBALES////////////////////
 vector<City> ciudades;
 vector<City> visitados;
-
 
 //FUNCIONES////////////////////////////
 bool is_valid_state(State &s, Action a) {
@@ -56,24 +57,22 @@ bool is_final_state(State &s) {
     return false;
 }
 
-City* buscador_ciudad(string nombreC){
+City buscador_ciudad(string nombreC){
     for (int i = 0; i < (int)ciudades.size(); i++){
         if(ciudades[i].ciudad.compare(nombreC) == 0){
-            return &ciudades[i];
+            return ciudades[i];
         }
     }
-    return NULL;
+    return City();
 }
 
 // Funcion validada
 State transition(State &s, Action &a) {
     State new_state = s;
-    City c = *buscador_ciudad(a.nombre_ciudad);
-    
+    City c = buscador_ciudad(a.nombre_ciudad);
     new_state.ciudadActual = c ;
     new_state.ciudadesRecorridas.push_back(c);
     new_state.distanciaRecorrida += a.distancia;
-    
     return new_state;
 }
 
@@ -321,7 +320,7 @@ int main () {
 
     State initial;
     initial.distanciaRecorrida = 0;
-    initial.ciudadActual = ciudades[0];
+    initial.ciudadActual = ciudades[Arad];
     initial.ciudadesRecorridas.push_back(initial.ciudadActual);
 
     State final_state = BFS_solve(initial);
