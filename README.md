@@ -80,7 +80,7 @@ de entregar una lista con las ciudades que se deben recorrer para cumplir el obj
 inicial y finaliza en la ciudad de destino esperada. De esta manera nuestro código ejecuta exitosamente su tarea.
 
 <h3>Cooevaluación</h3>
-<img src="https://drive.google.com/file/d/1692rHD27tcl_bgEZp6mNSdHVpuSLpWNE/view?usp=sharing">
+![img](https://drive.google.com/file/d/1692rHD27tcl_bgEZp6mNSdHVpuSLpWNE/view?usp=sharing)
 
 <h3>Video Presentación</h3>
 https://drive.google.com/file/d/1aCS4INWbHttOj1jQqqGcYAeBSdnq1nus/view?usp=drivesdk
