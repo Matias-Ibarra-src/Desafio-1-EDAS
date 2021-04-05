@@ -5,9 +5,12 @@
 #include <stack>
 #include <queue>
 
-#define destino_final "Bucharest"
+#define destino_final "Lugoj"
+#define inicio Hirsova
 
 using namespace std;
+//ENUM CON LOS NOMBRES DE LAS CIUDADES///
+enum cities{Arad, Zerind, Oradea, Sibiu, Fagaras, Neamt, Lasi, Vaslui, Eforie, Hirsova, Urziceni, Bucharest, Giurgiu, Timisoara, Lugoj, Mehadia, Dobreta, Craiova, Pitesti, Rimnicu};
 
 //CLASES///////////////////////////////////
 class City {
@@ -30,22 +33,23 @@ public:
     int distancia;
 };
 
-enum cities{Arad, Zerind, Oradea, Sibiu, Fagaras, Neamt, Lasi, Vaslui, Eforie, Hirsova, Urziceni, Bucharest, Giurgiu, Timisoara, Lugoj, Mehadia, Dobreta, Craiova, Pitesti, Rimnicu};
-
 //VARIABLES GLOBALES////////////////////
 vector<City> ciudades;
 vector<City> visitados;
 
 //FUNCIONES////////////////////////////
-bool is_valid_state(State &s, Action a) {
+vector<Action> get_actions(State &s) {
+    vector<Action> actions;
+    int size = s.ciudadActual.vecinos.size();
+    
+    for (int i = 0; i < size; i++) {
+        Action a;
+        a.nombre_ciudad = s.ciudadActual.vecinos[i];
+        a.distancia = s.ciudadActual.distances[i];
+        actions.push_back(a);
 
-    for(int i=0;i < (int)s.ciudadesRecorridas.size();i++){
-        City c = s.ciudadesRecorridas[i];
-        if(c.ciudad.compare(a.nombre_ciudad) == 0){
-            return false;
-        }
     }
-    return true;
+    return actions;
 }
 
 bool is_final_state(State &s) {
@@ -57,39 +61,36 @@ bool is_final_state(State &s) {
     return false;
 }
 
-City buscador_ciudad(string nombreC){
-    for (int i = 0; i < (int)ciudades.size(); i++){
-        if(ciudades[i].ciudad.compare(nombreC) == 0){
-            return ciudades[i];
+int buscador_ciudad(string nombreC, vector<City> cc){
+    for (int i = 0; i < (int)cc.size(); i++){
+        if(cc[i].ciudad.compare(nombreC) == 0){
+            return i;
         }
     }
-    return City();
+    return -1;
 }
 
-// Funcion validada
+
 State transition(State &s, Action &a) {
     State new_state = s;
-    City c = buscador_ciudad(a.nombre_ciudad);
+    int posicion = buscador_ciudad(a.nombre_ciudad, ciudades);
+    City c = ciudades.at(posicion);
     new_state.ciudadActual = c ;
     new_state.ciudadesRecorridas.push_back(c);
     new_state.distanciaRecorrida += a.distancia;
     return new_state;
 }
 
-vector<Action> get_actions(State &s) {
-    vector<Action> actions;
-    int size = s.ciudadActual.vecinos.size();
-    
-    for (int i = 0; i < size; i++) {
-        Action a;
-        a.nombre_ciudad = s.ciudadActual.vecinos[i];
-        a.distancia = s.ciudadActual.distances[i];
-        if (is_valid_state(s, a)) {
-            actions.push_back(a);
-        }
-    }
-    return actions;
+int isVisited(State &s, vector<City> cc){
+    string cityName = s.ciudadActual.ciudad;
+    return buscador_ciudad(cityName, cc);
 }
+
+void visit(State &s){
+    visitados.push_back(s.ciudadActual);
+}
+
+
 
 //CARGA DE DATOS
 void Fill_Map(vector<City> &ciudades){
@@ -301,17 +302,17 @@ State BFS_solve(State &initial) {
         State state = S.top();        
         S.pop();
         
-        if (is_final_state(state)) {
-            return state;
-        }
-
+        if (is_final_state(state)) return state;
+        if(isVisited(state, visitados) != -1) continue;
+        visit(state);
         vector<Action> actions = get_actions(state);
         
         for (Action a : actions) {
             State result = transition(state, a);
-            S.push(result);
+            if(isVisited(result, visitados) == -1) S.push(result);
         }
     }
+    return State();
 
 }
 
@@ -320,7 +321,7 @@ int main () {
 
     State initial;
     initial.distanciaRecorrida = 0;
-    initial.ciudadActual = ciudades[Arad];
+    initial.ciudadActual = ciudades[inicio];
     initial.ciudadesRecorridas.push_back(initial.ciudadActual);
 
     State final_state = BFS_solve(initial);
